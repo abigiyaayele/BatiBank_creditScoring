@@ -82,9 +82,20 @@ def detect_outliers(data):
         plt.title(f'Box plot of {feature}')
     plt.tight_layout()
     plt.show()
+def extract_numeric_parts(data):
+    data['TransactionId'] = data['TransactionId'].str.extract('(\d+)') 
+    data['BatchId'] = data['BatchId'].str.extract('(\d+)') 
+    data['AccountId'] = data['AccountId'].str.extract('(\d+)') 
+    data['SubscriptionId'] = data['SubscriptionId'].str.extract('(\d+)') 
+    data['CustomerId'] = data['CustomerId'].str.extract('(\d+)') 
+    data['ProviderId'] = data['ProviderId'].str.extract('(\d+)') 
+    data['ProductId'] = data['ProductId'].str.extract('(\d+)') 
+    data['ChannelId'] = data['ChannelId'].str.extract('(\d+)') 
+
 
 def main(file_path):
     data = load_data(file_path)
+    
     data_columnROW(data)
     data_overview(data)
     summary_statistics(data)
@@ -93,8 +104,9 @@ def main(file_path):
     correlation_analysis(data)
     identify_missing_values(data)
     detect_outliers(data)
-
+    extract_numeric_parts(data)
+    data.head(5)
 if __name__ == "__main__":
-    file_path = '../data/data.csv'
+    file_path = '../data/data2.csv'
     main(file_path)
 
