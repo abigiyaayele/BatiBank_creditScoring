@@ -1,14 +1,14 @@
 # BatiBank_creditScoring
 10 academy-week 6  
-### Project Summary
+## Project Summary
 
 As an Analytics Engineer at Bati Bank, I'm tasked with developing a Credit Scoring Model to support a buy-now-pay-later service in partnership with an eCommerce company. The objective is to enable the bank to evaluate potential borrowers and assign them a credit score that reflects their likelihood of defaulting on a loan. This project involves various tasks, from understanding credit risk to building and deploying machine learning models, ensuring compliance with Basel II Capital Accord.
 
-### Introduction
+## Introduction
 
 Credit scoring is a crucial process in financial services, quantifying the risk associated with lending to individuals. Traditional credit scoring models rely on historical data and statistical techniques to predict the likelihood of default. The buy-now-pay-later service aims to provide customers with credit to purchase products, necessitating a robust credit scoring system to minimize financial risk. This project encompasses data analysis, feature engineering, model development, and evaluation to create a reliable credit scoring model.
 
-### Objective
+## Objective
 
 1. Define a proxy variable to categorize users as high risk (bad) or low risk (good).
 2. Identify observable features that are good predictors of default.
@@ -17,7 +17,7 @@ Credit scoring is a crucial process in financial services, quantifying the risk 
 5. Predict the optimal loan amount and duration for each customer.
 
 
-### Methodologies
+## Methodologies
 
 1. **Exploratory Data Analysis (EDA):**
    - Understand the dataset structure.
@@ -44,7 +44,7 @@ Credit scoring is a crucial process in financial services, quantifying the risk 
    - Train and tune models using techniques like Grid Search and Random Search.
    - Evaluate models using metrics such as accuracy, precision, recall, F1 score, and ROC-AUC.
 
-### Task Steps
+## Task Steps
 
 1. **Task 1 - Understanding Credit Risk:**
    - Study credit risk concepts and definitions.
@@ -86,3 +86,5 @@ Credit scoring is a crucial process in financial services, quantifying the risk 
 - **Task 5:** Train and evaluate models
 
 This project leverages advanced data analysis and machine learning techniques to create a robust credit scoring model, enhancing the buy-now-pay-later service's effectiveness in assessing credit risk.
+
+#Author: Abigiya Ayele
