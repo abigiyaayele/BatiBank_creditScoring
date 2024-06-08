@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 from sklearn.impute import SimpleImputer
+from datetime import datetime
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, roc_auc_score
+from xverse.transformer import WOE
 
 # Load the dataset
 def load_data(file_path):
@@ -121,6 +126,81 @@ def standardize_features(data):
     scaler = StandardScaler()
     data[numerical_features] = scaler.fit_transform(data[numerical_features])
     return data
+ 
+
+
+# Load data
+file_path = 'path_to_your_data.csv'
+data = pd.read_csv(file_path)
+
+# Calculate RFMS components
+def calculate_recency(data, date_column='TransactionStartTime'):
+    data[date_column] = pd.to_datetime(data[date_column])
+    max_date = data[date_column].max()
+    data['Recency'] = (max_date - data[date_column]).dt.days
+    return data
+
+def calculate_frequency(data, id_column='CustomerId'):
+    frequency = data.groupby(id_column).size().reset_index(name='Frequency')
+    data = data.merge(frequency, on=id_column)
+    return data
+
+def calculate_monetary(data, id_column='CustomerId', amount_column='Amount'):
+    monetary = data.groupby(id_column)[amount_column].sum().reset_index(name='Monetary')
+    data = data.merge(monetary, on=id_column)
+    return data
+
+def calculate_seasonality(data, date_column='TransactionStartTime'):
+    data[date_column] = pd.to_datetime(data[date_column])
+    data['Month'] = data[date_column].dt.month
+    seasonality = data.groupby('CustomerId')['Month'].apply(lambda x: x.value_counts().idxmax()).reset_index(name='Seasonality')
+    data = data.merge(seasonality, on='CustomerId')
+    return data
+
+# Calculate RFMS
+data = calculate_recency(data)
+data = calculate_frequency(data)
+data = calculate_monetary(data)
+data = calculate_seasonality(data)
+
+# Classify users
+def classify_users(data, recency_threshold, frequency_threshold, monetary_threshold, seasonality_threshold):
+    conditions = [
+        (data['Recency'] <= recency_threshold) &
+        (data['Frequency'] >= frequency_threshold) &
+        (data['Monetary'] >= monetary_threshold) &
+        (data['Seasonality'] == seasonality_threshold)
+    ]
+    choices = ['good']
+    data['RFMS_Score'] = np.select(conditions, choices, default='bad')
+    return data
+
+recency_threshold = 30
+frequency_threshold = 5
+monetary_threshold = 1000
+seasonality_threshold = 1
+data = classify_users(data, recency_threshold, frequency_threshold, monetary_threshold, seasonality_threshold)
+
+# WoE Binning
+data['FraudResult'] = data['FraudResult'].astype(int)
+X = data[['Recency', 'Frequency', 'Monetary', 'Seasonality']]
+y = data['FraudResult']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+woe = WOE()
+woe.fit(X_train, y_train)
+X_train_woe = woe.transform(X_train)
+X_test_woe = woe.transform(X_test)
+
+woe_iv = woe.woe_iv_df
+print(woe_iv)
+
+# Train and evaluate model
+model = LogisticRegression()
+model.fit(X_train_woe, y_train)
+y_pred = model.predict(X_test_woe)
+print(classification_report(y_test, y_pred))
+print("AUC-ROC:", roc_auc_score(y_test, y_pred))
 
 # Main function
 def main(file_path):
