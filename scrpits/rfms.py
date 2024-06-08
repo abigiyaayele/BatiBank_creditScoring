@@ -1,4 +1,5 @@
 
+from os import name
 import pandas as pd
 import numpy as np
 from xverse.transformer import WOE
@@ -90,7 +91,8 @@ def classify_users(rfm, threshold):
 
 if name == "main":
     # Read data
-    data = pd.read_csv('creditScoring/data/raw/data.csv')
+    file_path = '../data/data2.csv'
+    data = file_path
     
     # Preprocess data using WOE
     data_preprocessed = preprocess_data(data)
